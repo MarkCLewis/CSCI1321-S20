@@ -30,5 +30,12 @@ object Room {
     r
   }
 
-  def readRoom(lines: Iterator[String]): Room = ???
+  def readRoom(lines: Iterator[String]): Room = {
+    val name = lines.next()
+    val desc = lines.next()
+    val items = List.fill(lines.next.toInt)(Item(lines.next(), lines.next()))
+    val exits = lines.next().split(",").map(_.toInt)
+    new Room(name, desc, items, exits)
+  }
+  
 }

@@ -1,0 +1,17 @@
+3
+CSI 388
+A cheery room full of laughing students and a grumpy old person.
+2
+chair
+Something you sit on.
+computer
+A magical device that rules the world. If only you could control it.
+-1,-1,-1,1,-1,-1
+Hallway
+A long room connecting other rooms.
+0
+-1,2,0,-1,-1,-1
+Stairwell Third Floor
+Takes you between floors.
+0
+1,-1,-1,-1,-1,-1
