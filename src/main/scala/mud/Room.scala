@@ -28,7 +28,7 @@ object Room {
     val r = Array.fill(lines.next.toInt)(readRoom(lines))
     source.close()
     r
-  } // TODO
+  }
 
   def readRoom(lines: Iterator[String]): Room = {
     val name = lines.next()
