@@ -21,22 +21,8 @@ object DrLewio extends JFXApp {
     scene = new Scene(800, 800) {
       content = canvas
 
-      onKeyPressed = (ke: KeyEvent) => {
-        ke.code match {
-          case KeyCode.Left => grid.leftPressed()
-          case KeyCode.Right => grid.rightPressed()
-          case KeyCode.Up => grid.upPressed()
-          case _ =>
-        }
-      }
-      onKeyReleased = (ke: KeyEvent) => {
-        ke.code match {
-          case KeyCode.Left => grid.leftReleased()
-          case KeyCode.Right => grid.rightReleased()
-          case KeyCode.Up => grid.upReleased()
-          case _ =>
-        }
-      }
+      onKeyPressed = (ke: KeyEvent) => grid.keyPressed(ke.code)
+      onKeyReleased = (ke: KeyEvent) => grid.keyReleased(ke.code)
 
       var lastTime = -1L
       val timer = AnimationTimer(time => {
