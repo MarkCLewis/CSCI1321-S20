@@ -8,6 +8,9 @@ import scalafx.scene.image.WritableImage
 import scalafx.scene.image.ImageView
 import scalafx.scene.paint.Color
 import scalafx.scene.input.KeyCode
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+import scalafx.application.Platform
 
 class Julia(c: Complex) {
   private var maxCount = 10000
@@ -56,13 +59,23 @@ class Julia(c: Complex) {
   def calcJulia(wimg: WritableImage): Unit = {
     val writer = wimg.pixelWriter
     val start = System.nanoTime()
-    for (i <- 0 until wimg.width.value.toInt; val x = realMin + i * (realMax - realMin) / wimg.width.value; j <- 0 until wimg.height.value.toInt) {
-      val y = imaginaryMin + j * (imaginaryMax - imaginaryMin) / wimg.height.value
-      val cnt = juliaCount(Complex(x, y))
-      val color = if (cnt >= maxCount) Color.Black else Color(math.log(cnt + 1) / math.log(maxCount + 1), 0.0, 0.0, 1.0)
-      writer.setColor(i, j, color)
+    val colorFutures = for (i <- 0 until wimg.width.value.toInt) yield Future {
+      val x = realMin + i * (realMax - realMin) / wimg.width.value
+      for (j <- 0 until wimg.height.value.toInt) yield {
+        val y = imaginaryMin + j * (imaginaryMax - imaginaryMin) / wimg.height.value
+        val cnt = juliaCount(Complex(x, y))
+        val color = if (cnt >= maxCount) Color.Black else Color(math.log(cnt + 1) / math.log(maxCount + 1), 0.0, 0.0, 1.0)
+        (i, j, color)
+      }
     }
-    println("Time taken: " + (System.nanoTime() - start)*1e-9)
+    Future.sequence(colorFutures).foreach { colors => 
+      Platform.runLater(
+        for (col <- colors; (i, j, color) <- col) {
+          writer.setColor(i, j, color)
+        }
+      )
+      println("Time taken: " + (System.nanoTime() - start)*1e-9)
+    }
   }
 
   def juliaCount(z0: Complex): Int = {

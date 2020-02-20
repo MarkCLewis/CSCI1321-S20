@@ -61,7 +61,9 @@ object Mandelbrot extends JFXApp {
   def calcMandelbrot(wimg: WritableImage): Unit = {
     val writer = wimg.pixelWriter
     val start = System.nanoTime()
-    for (i <- 0 until wimg.width.value.toInt; val x = realMin + i * (realMax - realMin) / wimg.width.value; j <- 0 until wimg.height.value.toInt) {
+    for (i <- (0 until wimg.width.value.toInt).par; 
+        val x = realMin + i * (realMax - realMin) / wimg.width.value; 
+        j <- 0 until wimg.height.value.toInt) {
       val y = imaginaryMin + j * (imaginaryMax - imaginaryMin) / wimg.height.value
       val cnt = mandelCount(Complex(x, y))
       val color = if (cnt >= maxCount) Color.Black else Color(math.log(cnt + 1) / math.log(maxCount + 1), 0.0, 0.0, 1.0)
