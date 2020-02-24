@@ -27,9 +27,9 @@ object ShortestPath {
       for ((offsetx, offsety) <- offsets) {
         val nx = x + offsetx
         val ny = y + offsety
-        if (nx == ex && ny == ey) return steps + 1
         if (nx >= 0 && nx < maze.length && ny >= 0 && ny < maze(nx).length &&
             maze(nx)(ny) == 0 && !visited((nx, ny))) {
+          if (nx == ex && ny == ey) return steps + 1
           queue.enqueue((nx, ny, steps + 1))
           visited += nx -> ny
         }
