@@ -1,5 +1,6 @@
 package actors
 
+import scalafx.Includes._
 import scalafx.application.JFXApp
 import scalafx.scene.Scene
 import scalafx.scene.image.WritableImage
@@ -17,6 +18,9 @@ object CrystalGrowth extends JFXApp {
     scene = new Scene(800, 800) {
       val viewer = new ImageView(img)
       content = viewer
+      onCloseRequest = e => {
+        system.terminate()
+      }
     }
   }
 }
