@@ -3,30 +3,37 @@ package mud
 import akka.actor.Actor
 import akka.actor.ActorRef
 
-class Room(val name: String, val key: String, val description: String, private var items: List[Item], private val _exit: Array[String]) extends Actor {
+class Room(val name: String, val key: String, val description: String, 
+        private var items: List[Item], private val exitNames: Array[String]) extends Actor {
 
+    private var exits: Array[Option[ActorRef]] = null
+
+    import Room._
     def receive = {
+        case LinkRooms(links) => exits = exitNames.map(links.get)
+        case PrintDescription => // sender ! Player.PrintMessage(desc())
+        case GetExit(dir) => // sender ! Player.TakeExit(getExit(dir))
+        case GetItem(itemName) => // sender ! Player.TakeItem(getItem(itemName))
+        case DropItem(item) => dropItem(item)
         case m => println("Unhandled message in Room: " + m)
     }
-
-    def exit(index: Int) = _exit(index)
 
     def desc(): String = {
 
         var north = ""
-        if(exit(0) != "-1") north = "North "
+        if(exits(0) != None) north = "North "
         var south = ""
-        if(exit(1) != "-1") south = "South "
+        if(exits(1) != None) south = "South "
         var east = ""
-        if(exit(2) != "-1") east = "East "
+        if(exits(2) != None) east = "East "
         var west = ""
-        if(exit(3) != "-1") west = "West "
+        if(exits(3) != None) west = "West "
         var up = ""
-        if(exit(4) != "-1") up = "Up "
+        if(exits(4) != None) up = "Up "
         var down = ""
-        if(exit(5) != "-1") down = "Down"
+        if(exits(5) != None) down = "Down"
 
-        var exits = north + south + east + west + up + down
+        var exitString = north + south + east + west + up + down
 
         var inroom = ""
 
@@ -34,16 +41,11 @@ class Room(val name: String, val key: String, val description: String, private v
             inroom = inroom + items(index).name + " "
         }
 
-        name + "\n" + description + "\n" + "Exits: " + exits + "\n" + "Items: " + inroom + "\n"
+        name + "\n" + description + "\n" + "Exits: " + exitString + "\n" + "Items: " + inroom + "\n"
     }
 
-    def getExit(dir: Int): Option[Room] = {
-        if(exit(dir) == "-1"){
-            None
-        }
-        else{
-            Some(Room.rooms(exit(dir)))
-        }
+    def getExit(dir: Int): Option[ActorRef] = {
+        exits(dir)
     }
 
     def getItem(itemName: String): Option[Item] = {
@@ -60,5 +62,9 @@ class Room(val name: String, val key: String, val description: String, private v
 }
 
 object Room {
-    
+    case class LinkRooms(links: Map[String, ActorRef])
+    case object PrintDescription
+    case class GetExit(dir: Int)
+    case class GetItem(itemName: String)
+    case class DropItem(item: Item)
 }
