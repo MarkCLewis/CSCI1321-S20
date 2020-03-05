@@ -9,4 +9,6 @@ class PillHalf(val x: Int, val y: Int, val color: ColorOption.Value) extends Gri
   def moveAllowed(dx: Int, dy: Int, isClear: (Int, Int) => Boolean): Boolean = {
     isClear(x + dx, y + dy)
   }
+
+  def buildPassable = PassableCell(x, y, color, 0)
 }

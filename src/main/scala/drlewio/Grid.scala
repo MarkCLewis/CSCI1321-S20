@@ -52,4 +52,11 @@ class Grid {
 
   def keyPressed(keyCode: KeyCode): Unit = keysHeld += keyCode
   def keyReleased(keyCode: KeyCode): Unit = keysHeld -= keyCode
+
+  def buildPassable: PassableGrid = {
+    val cells = for (elem <- elements; cell <- elem.cells) yield {
+      cell.buildPassable
+    }
+    PassableGrid(cells)
+  }
 }

@@ -29,7 +29,8 @@ object DrLewio extends JFXApp {
         if (lastTime >= 0) {
           val delay = (time - lastTime)/1e9
           grid.update(delay)
-          renderer.render(grid)
+          val pg = grid.buildPassable
+          renderer.render(pg)
         }
         lastTime = time
       })

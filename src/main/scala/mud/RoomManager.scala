@@ -23,8 +23,15 @@ class RoomManager extends Actor {
     key -> context.actorOf(Props(new Room(name, key, desc, items, exits)), key)
   }
 
+  import RoomManager._
   def receive = {
+    case AddPlayerToRoom(player, key) =>
+      // player ! Player.TakeExit(rooms.get(key))
     case m => println("Unhandled message in RoomManager: " + m)
   }
 
+}
+
+object RoomManager {
+  case class AddPlayerToRoom(player: ActorRef, key: String)
 }
