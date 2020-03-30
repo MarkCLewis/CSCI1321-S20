@@ -1,10 +1,5 @@
 package drlewio
 
-import scalafx.scene.canvas.GraphicsContext
-import scalafx.scene.paint.Color
-import scalafx.scene.input.KeyCode
-import scala.concurrent.java8.FuturesConvertersImpl.P
-
 class Grid {
   val odds = 0.3
   private var _currentPill = new Pill(Seq(new PillHalf(3, 0, ColorOption.randomColor),
@@ -17,7 +12,7 @@ class Grid {
 
   val gridWidth = 8
   val gridHeight = 16
-  private var keysHeld = Set[KeyCode]()
+  private var keysHeld = Set[Int]()
   private var dropping = false
   private var fallDelay = 0.0
   val fallInterval = 1.0
@@ -58,10 +53,10 @@ class Grid {
         fallDelay = 0.0
       }
       if (moveDelay >= moveInterval) {
-        if (keysHeld(KeyCode.Up)) _currentPill = currentPill.rotate(isClear)
-        if (keysHeld(KeyCode.Left)) _currentPill = currentPill.move(-1, 0, isClear)
-        if (keysHeld(KeyCode.Right)) _currentPill = currentPill.move(1, 0, isClear)
-        if (keysHeld(KeyCode.Down)) _currentPill = currentPill.move(0, 1, isClear)
+        if (keysHeld(KeyData.Up)) _currentPill = currentPill.rotate(isClear)
+        if (keysHeld(KeyData.Left)) _currentPill = currentPill.move(-1, 0, isClear)
+        if (keysHeld(KeyData.Right)) _currentPill = currentPill.move(1, 0, isClear)
+        if (keysHeld(KeyData.Down)) _currentPill = currentPill.move(0, 1, isClear)
         moveDelay = 0.0
       }
     }
@@ -71,8 +66,8 @@ class Grid {
       !_elements.exists(e => e.cells.exists(c => c.x == x && c.y == y))
   }
 
-  def keyPressed(keyCode: KeyCode): Unit = keysHeld += keyCode
-  def keyReleased(keyCode: KeyCode): Unit = keysHeld -= keyCode
+  def keyPressed(keyCode: Int): Unit = keysHeld += keyCode
+  def keyReleased(keyCode: Int): Unit = keysHeld -= keyCode
 
   def buildPassable: PassableGrid = {
     val cells = for (elem <- elements; cell <- elem.cells) yield {

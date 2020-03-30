@@ -35,12 +35,16 @@ object Client extends JFXApp {
       content = canvas
 
       onKeyPressed = (ke: KeyEvent) => {
+        println("Sending press.")
         oos.writeInt(KeyData.KeyPressed)
         oos.writeInt(KeyData.codeToInt(ke.code))
+        oos.flush()
       }
       onKeyReleased = (ke: KeyEvent) => {
+        println("Sending released.")
         oos.writeInt(KeyData.KeyReleased)
         oos.writeInt(KeyData.codeToInt(ke.code))
+        oos.flush()
       }
     }
   }

@@ -25,6 +25,8 @@ object Server extends App {
     }
   }
 
+  val drawInterval = 0.05
+  var drawDelay = 0.0
   var lastTime = -1L
   while(true) {
     while (!queue.isEmpty()) {
@@ -33,11 +35,30 @@ object Server extends App {
     val time = System.nanoTime()
     if (lastTime >= 0) {
       val delay = (time - lastTime)/1e9
+      drawDelay += delay
+      // println(s"Delay = $delay")
       for (pc <- connections) {
+        // First check if they have input to handle
+        if (pc.in.available() > 0) {
+          println("Reading key data.")
+          pc.in.readInt() match {
+            case KeyData.KeyPressed => pc.grid.keyPressed(pc.in.readInt())
+            case KeyData.KeyReleased => pc.grid.keyReleased(pc.in.readInt())
+            case x => println(s"Oops! Got $x for the type of key interaction.")
+          }
+        }
+
+        // Then update the grid
         pc.grid.update(delay)
-        val pg = pc.grid.buildPassable
-        pc.out.writeObject(pg)
+
+        // Lastly send the grid if it is time
+        if (drawDelay > drawInterval) {
+          val pg = pc.grid.buildPassable
+          pc.out.writeObject(pg)
+          pc.out.flush()
+        }
       }
+      if(drawDelay > drawInterval) drawDelay = 0.0
     }
     lastTime = time
   }
