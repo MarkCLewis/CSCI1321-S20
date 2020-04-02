@@ -10,5 +10,6 @@ object KeyData {
   val Left = 2
   val Right = 3
 
-  val codeToInt: Map[KeyCode, Int] = Map(KeyCode.Up -> Up, KeyCode.Down -> Down, KeyCode.Left -> Left, KeyCode.Right -> Right)
+  val codeToInt: Map[KeyCode, Int] = Map(KeyCode.Up -> Up, KeyCode.Down -> Down,
+    KeyCode.Left -> Left, KeyCode.Right -> Right)
 }
