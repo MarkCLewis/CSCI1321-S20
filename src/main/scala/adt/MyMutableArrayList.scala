@@ -34,7 +34,7 @@ class MyMutableArrayList[A : ClassTag] extends MyMutableList[A] {
   }
 
   def update(index: Int, elem: A): Unit = {
-    if (index < 0 || index > size) throw new IndexOutOfBoundsException(s"$index: size = $size")
+    if (index < 0 || index >= size) throw new IndexOutOfBoundsException(s"$index: size = $size")
     arr(index) = elem
   }
 
