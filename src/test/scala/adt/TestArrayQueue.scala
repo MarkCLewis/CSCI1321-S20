@@ -5,10 +5,10 @@ import org.junit.Assert._
 import org.junit.Before
 
 class TestArrayQueue {
-  var q: ArrayQueue[Int] = null
+  var q: Queue[Int] = null
 
   @Before def createQueue = {
-    q = new ArrayQueue[Int]
+    q = new ListQueue[Int]
   }
 
   @Test def emptyOnNew(): Unit = {
