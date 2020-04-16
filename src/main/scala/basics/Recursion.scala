@@ -36,4 +36,6 @@ object Recursion extends App {
       take max leave
   }
 
+  println(knapsack(List(2.0 -> 3.0, 5.0 -> 4.0, 7.0 -> 6.0, 1.0 -> 1.5), 10))
+
 }
