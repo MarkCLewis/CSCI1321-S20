@@ -33,6 +33,15 @@ object Sorts extends App {
       if (lt(h1, h2)) h1 :: merge(t1, l2)(lt) else h2 :: merge(l1, t2)(lt)
   }
 
+  // O(n*log(n))
+  // n = 2^l  ----> l = log_2(n) = O(log(n))
+  // n/2
+  // n/4
+  // ...
+  // 8 = 2^3
+  // 4 = 2^2
+  // 2 = 2^1
+  // 1 = 2^0
   def mergeSort[A](lst: List[A])(lt: (A, A) => Boolean): List[A] = lst match {
     case Nil => Nil
     case h :: Nil => lst
@@ -42,4 +51,44 @@ object Sorts extends App {
   }
 
   println(mergeSort(List.fill(10)(util.Random.nextInt(100)))(_ < _))
+
+  // O(n*log(n))
+  def quicksort[A](lst: List[A])(lt: (A, A) => Boolean): List[A] = lst match {
+    case Nil | _ :: Nil => lst
+    case pivot :: t =>
+      val (less, greater) = t.partition(x => lt(x, pivot))
+      quicksort(less)(lt) ::: (pivot :: quicksort(greater)(lt))
+  }
+
+  println(quicksort(List.fill(10)(util.Random.nextInt(100)))(_ < _))
+
+  def quicksort[A](arr: Array[A])(lt: (A, A) => Boolean): Unit = {
+    def helper(start: Int, end: Int): Unit = {
+      if (start < end - 1) {
+        // Pick better pivot
+        var low = start + 1
+        var high = end - 1
+        while (low <= high) {
+          if(lt(arr(low), arr(start))) {
+            low += 1
+          } else {
+            val tmp = arr(low)
+            arr(low) = arr(high)
+            arr(high) = tmp
+            high -= 1
+          }
+        }
+        val tmp = arr(start)
+        arr(start) = arr(high)
+        arr(high) = tmp
+        helper(start, high)
+        helper(high + 1, end)
+      }
+    }
+    helper(0, arr.length)
+  }
+
+  val nums2 = Array.fill(10)(util.Random.nextInt(100))
+  quicksort(nums2)(_ < _)
+  println(nums2.mkString(", "))
 }
