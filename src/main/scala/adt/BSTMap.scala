@@ -16,7 +16,20 @@ class BSTMap[K, V](lt: (K, K) => Boolean) extends mutable.Map[K, V] {
     // Option(rover).map(_._2)
   }
 
-  def iterator: Iterator[(K, V)] = ???
+  def iterator = new Iterator[(K, V)] {
+    val stack = new mutable.Stack[Node[K, V]]
+    pushAllLeft(root)
+    def pushAllLeft(n: Node[K, V]): Unit = if (n != null) {
+      stack.push(n)
+      pushAllLeft(n.left)
+    }
+    def hasNext: Boolean = stack.nonEmpty
+    def next(): (K, V) = {
+      val ret = stack.pop()
+      pushAllLeft(ret.right)
+      ret.kv
+    }
+  }
 
   def += (kv: (K, V)) = {
     def helper(n: Node[K, V]): Node[K, V] = {
@@ -38,7 +51,34 @@ class BSTMap[K, V](lt: (K, K) => Boolean) extends mutable.Map[K, V] {
   }
 
   def -= (key: K) = {
-    ???
+    def findVictim(n: Node[K, V]): Node[K, V] = {
+      if (n != null) {
+        if (key == n.kv._1) {
+          if (n.left == null) n.right
+          else if (n.right == null) n.left
+          else {
+            val (newkv, newLeft) = findBiggest(n.left)
+            n.kv = newkv
+            n.left = newLeft
+            n
+          }
+        } else {
+          if (lt(key, n.kv._1)) n.left = findVictim(n.left)
+          else n.right = findVictim(n.right)
+          n
+        }
+      } else n
+    }
+    def findBiggest(n: Node[K, V]): ((K, V), Node[K, V]) = {
+      if (n.right == null) {
+        (n.kv, n.left)
+      } else {
+        val (newkv, newRight) = findBiggest(n.right)
+        n.right = newRight
+        (newkv, n)
+      }
+    }
+    root = findVictim(root)
     this
   }
 
