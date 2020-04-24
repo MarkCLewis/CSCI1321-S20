@@ -82,8 +82,37 @@ class BSTMap[K, V](lt: (K, K) => Boolean) extends mutable.Map[K, V] {
     this
   }
 
+  def preorder(n: Node[K, V], visitor: V => Unit): Unit = {
+    if (n != null) {
+      visitor(n.kv._2)
+      preorder(n.left, visitor)
+      preorder(n.right, visitor)
+    }
+  }
+  def postorder(n: Node[K, V], visitor: V => Unit): Unit = {
+    if (n != null) {
+      postorder(n.left, visitor)
+      postorder(n.right, visitor)
+      visitor(n.kv._2)
+    }
+  }
+  def inorder(n: Node[K, V], visitor: V => Unit): Unit = {
+    if (n != null) {
+      inorder(n.left, visitor)
+      visitor(n.kv._2)
+      inorder(n.right, visitor)
+    }
+  }
 }
 
 object BSTMap {
   private class Node[K, V](var kv: (K, V), var left: Node[K, V], var right: Node[K, V])
+
+  def main(args: Array[String]): Unit = {
+    val bst = new BSTMap[Int, String](_ < _)
+    bst += 5 -> "five" += 3 -> "three" += 7 -> "seven" += 4 -> "four" 
+    bst += 9 -> "nine" += 2 -> "two" += 6 -> "six"
+
+    bst.inorder(bst.root, println)
+  }
 }

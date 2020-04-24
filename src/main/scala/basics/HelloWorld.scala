@@ -15,4 +15,9 @@ object HelloWorld {
 	def square(x: Double) = x*x
 	
 	def cube(x: Double) = x*x*x
+
+	def numberedLines(lines: List[Int]): Map[Int, String] = {
+		val regex = """(\d+)\.(.*)""".r
+		(for (regex(num, str) <- lines) yield num.toInt -> str).toMap
+	}
 }
